@@ -1,17 +1,5 @@
-{ fetchCrate
-, lib
-, rustPlatform
-, clang
-, llvm
-, udev
-, pkg-config
-, protobuf
-, openssl
-, zlib
-, libclang
-, stdenv
-, darwinPackages
-}:
+{ fetchCrate, lib, rustPlatform, clang, llvm, udev, pkg-config, protobuf
+, openssl, zlib, libclang, stdenv, darwinPackages }:
 
 rustPlatform.buildRustPackage rec {
   pname = "spl-token-cli";
@@ -26,13 +14,8 @@ rustPlatform.buildRustPackage rec {
   verifyCargoDeps = true;
 
   nativeBuildInputs = [ clang llvm pkg-config protobuf ];
-  buildInputs = [
-    rustPlatform.bindgenHook
-    libclang
-    openssl
-    zlib
-  ] ++ darwinPackages
-  ++ (lib.optionals stdenv.isLinux [ udev ]);
+  buildInputs = [ rustPlatform.bindgenHook libclang openssl zlib ]
+    ++ darwinPackages ++ (lib.optionals stdenv.isLinux [ udev ]);
   strictDeps = true;
 
   # Tests build bpf stuff, which we don't need

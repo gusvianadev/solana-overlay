@@ -1,47 +1,25 @@
-{ pkgs
-, rustStable
-, rust-1_60
-}:
+{ pkgs, rustStable, rust-1_78 }:
 let
   darwinPackages = pkgs.lib.optionals pkgs.stdenv.isDarwin
     (with pkgs.darwin.apple_sdk.frameworks;
-    ([ IOKit Security CoreFoundation AppKit ]
-      ++ (pkgs.lib.optionals pkgs.stdenv.isAarch64 [ System ])));
+      ([ IOKit Security CoreFoundation AppKit ]
+        ++ (pkgs.lib.optionals pkgs.stdenv.isAarch64 [ System ])));
   anchorPackages = import ./anchor {
     inherit rustStable;
     inherit (pkgs) lib pkg-config openssl stdenv udev fetchFromGitHub;
     inherit darwinPackages;
   };
   solanaPackages =
-    (import ./solana { inherit pkgs rustStable darwinPackages rust-1_60; });
+    (import ./solana { inherit pkgs rustStable darwinPackages rust-1_78; });
 
   solanaFlattened = with solanaPackages; {
-    solana-1_8-basic = solana-1_8.solana-basic;
-    solana-1_8-full = solana-1_8.solana-full;
-
-    solana-1_9-basic = solana-1_9.solana-basic;
-    solana-1_9-full = solana-1_9.solana-full;
-
-    solana-1_10-basic = solana-1_10.solana-basic;
-    solana-1_10-full = solana-1_10.solana-full;
-
-    solana-1_11-basic = solana-1_11.solana-basic;
-    solana-1_11-full = solana-1_11.solana-full;
-
-    solana-1_13-basic = solana-1_13.solana-basic;
-    solana-1_13-full = solana-1_13.solana-full;
-
-    solana-1_17-basic = solana-1_17.solana-basic;
-    solana-1_17-full = solana-1_17.solana-full;
-
-    solana-1_18-basic = solana-1_18.solana-basic;
-    solana-1_18-full = solana-1_18.solana-full;
+    solana-2_0-basic = solana-2_0.solana-basic;
+    solana-2_0-full = solana-2_0.solana-full;
 
     solana-basic = solana.solana-basic;
     solana-full = solana.solana-full;
   };
-in
-anchorPackages // solanaFlattened // rec {
+in anchorPackages // solanaFlattened // rec {
   spl-token-cli = pkgs.callPackage ./spl-token-cli.nix {
     inherit (rustStable) rustPlatform;
     inherit (pkgs.llvmPackages) libclang;
@@ -84,8 +62,8 @@ anchorPackages // solanaFlattened // rec {
       meta.description = "Common utilities for building Rust packages.";
 
       paths = [ pkg-config openssl zlib libiconv ]
-      ++ (lib.optionals stdenv.isLinux ([ udev ]))
-      ++ (lib.optionals stdenv.isDarwin
-        (with darwin.apple_sdk.frameworks; [ AppKit IOKit Foundation ]));
+        ++ (lib.optionals stdenv.isLinux ([ udev ]))
+        ++ (lib.optionals stdenv.isDarwin
+          (with darwin.apple_sdk.frameworks; [ AppKit IOKit Foundation ]));
     };
 }

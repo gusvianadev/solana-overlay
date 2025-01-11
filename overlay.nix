@@ -7,14 +7,13 @@ let
       cargo = rust;
     });
   };
-  rust-1_60 = mkRust prev.rust-bin.stable."1.60.0".minimal;
+  rust-1_78 = mkRust prev.rust-bin.stable."1.78.0".minimal;
   rustStable = mkRust prev.rust-bin.stable."1.76.0".minimal;
   saberPackages = (import ./packages {
-    inherit rustStable rust-1_60;
+    inherit rustStable rust-1_78;
     pkgs = prev;
   });
-in
-saberPackages // {
+in saberPackages // {
   saber = saberPackages // {
     default = import ./env.nix { pkgs = prev // saberPackages; };
   };
