@@ -87,7 +87,10 @@ in rustPlatform.buildRustPackage rec {
 
   postInstall = ''
     mkdir -p $out/bin/sdk/bpf
-    cp -a ./sdk/bpf/* $out/bin/sdk/bpf/
+    cp -a ./sdk/sbf/* $out/bin/sdk/bpf/
+
+    mkdir -p $out/bin/sdk/sbf
+    cp -a ./sdk/sbf/* $out/bin/sdk/sbf/
   '';
 
   # this is too slow
